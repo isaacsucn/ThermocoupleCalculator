@@ -26,7 +26,7 @@ Write its90 table to its90.txt in text, which can be read.
 Write compareIts90.txt to test its90.dat file. 
     The program read data from its90.dat then write compareIts90.txt.
     You can compare its90.txt and compareIts90.txt to verify data is saved.
-Write the coefficient data to termocouple.h which can be used under fold ../src
+Write the coefficient data to thermocouple.h which can be used under fold ../src
  */
 
 #include <iostream>
@@ -84,7 +84,7 @@ enum ActionType
 	ActionIts90Table=0,
 	ActionReferenceFunction,
 	ActionInverseFunctionCoefficient,
-    ActionTemperaturRange,
+    ActionTemperatureRange,
     ActionVoltageRange,
     ActionErrorRange,
     ActionExponential
@@ -99,10 +99,10 @@ enum TableBaseIndex
 	TableBaseLowLimitSub,
 	TableBaseHighLimitSub,
     TableBaseLineNum,
-    TalbeBaseIndexNum
+    TableBaseIndexNum
 };
 static double its90Table[TC_TYPE_NUM][MAX_TEMP_NUM][NUM_PER_LINE];
-static int its90TableBase[TC_TYPE_NUM][TalbeBaseIndexNum];  
+static int its90TableBase[TC_TYPE_NUM][TableBaseIndexNum];  
 
 static unsigned short tc_reference_function_subrange_num[TC_TYPE_NUM];
 static unsigned short tc_reference_function_coefficients_num[TC_TYPE_NUM][TC_MAX_SUBRANGE_NUM];
@@ -197,13 +197,13 @@ int read_data_from_file(string& file_name)
             is>>s2;
             if(s2.empty())
             {
-                cout<<"ERROR, the string afte type is empty at line "<<lineNum<<endl;
+                cout<<"ERROR, the string after type is empty at line "<<lineNum<<endl;
                 cout<<"The line is :"<<s<<endl;
                 return -1;
             }
             if(s2.at(0)!=currentTypeChar)
             {
-                cout<<"ERROR, the string "<<s2.at(0)<<" afte type is not pair with current type "<<currentTypeChar<<"  at line "<<lineNum<<endl;
+                cout<<"ERROR, the string "<<s2.at(0)<<" after type is not pair with current type "<<currentTypeChar<<"  at line "<<lineNum<<endl;
                 cout<<"The line is :"<<s<<endl;
                 return -1;
             }
@@ -269,7 +269,7 @@ int read_data_from_file(string& file_name)
             {
                 try
                 {
-                    rangeBase=stof(s2);
+                    rangeBase=stod(s2);
                 }
                 catch(const std::exception& e)
                 {
@@ -303,7 +303,7 @@ int read_data_from_file(string& file_name)
             tc_inverse_function_temp_subrange_base[currentType][rangeIndex]=rangeBase;
             strcpy(tc_inverse_function_temp_subrange_base_char[currentType][rangeIndex],s2.c_str());
             rangeIndex++;
-            currentAction=ActionTemperaturRange;
+            currentAction=ActionTemperatureRange;
             continue;
         }  
         if(s1==string("range:"))
@@ -363,7 +363,7 @@ int read_data_from_file(string& file_name)
             RangeCount++;
             switch (currentAction)
             {
-            case ActionTemperaturRange:
+            case ActionTemperatureRange:
                 RangeInTemperatureCount++;
                 while(is>>s2)
                 {
@@ -686,10 +686,10 @@ int write_reference_function_coefficients(ostream& outFile)
 
     outFile<<"static double tc_reference_function_typeK_exponential_const[TC_TYPE_K_EXPONENTIAL_CONST_NUM]="<<endl;
     outFile<<"{";
-    for(int outi=0;outi<=TC_TYPE_K_EXPONENTIAL_CONST_NUM;outi++)
+    for(int outI=0;outI<=TC_TYPE_K_EXPONENTIAL_CONST_NUM;outI++)
     {
-        outFile<<tc_reference_function_typeK_exponential_const_char[outi];
-        if(outi<(TC_TYPE_K_EXPONENTIAL_CONST_NUM-1))
+        outFile<<tc_reference_function_typeK_exponential_const_char[outI];
+        if(outI<(TC_TYPE_K_EXPONENTIAL_CONST_NUM-1))
         {
            outFile<<","; 
         }
@@ -943,7 +943,7 @@ int write_its90_table_to_bin_file(string& file_name)
         cout << "error while open its90 file when write." << endl;
         return -1;
     }
-    its90out.write((char*)its90TableBase, sizeof(int)*TC_TYPE_NUM*TalbeBaseIndexNum);
+    its90out.write((char*)its90TableBase, sizeof(int)*TC_TYPE_NUM*TableBaseIndexNum);
     its90out.write((char*)its90Table,sizeof(double)*TC_TYPE_NUM*MAX_TEMP_NUM*NUM_PER_LINE);
     its90out.close();
     cout<<"write its90 table file"<<file_name<<" success!"<<endl;
@@ -957,7 +957,7 @@ int read_its90_table_from_bin_file(string& file_name)
         cout << "error while open its90 file when write." << endl;
         return -1;
     }
-    its90in.read((char*)its90TableBase, sizeof(int)*TC_TYPE_NUM*TalbeBaseIndexNum);
+    its90in.read((char*)its90TableBase, sizeof(int)*TC_TYPE_NUM*TableBaseIndexNum);
     its90in.read((char*)its90Table,sizeof(double)*TC_TYPE_NUM*MAX_TEMP_NUM*NUM_PER_LINE);
     its90in.close();
     cout<<"read its90 table file"<<file_name<<" success!"<<endl;

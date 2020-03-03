@@ -21,7 +21,7 @@ enum TableBaseIndex
 	TableBaseLowLimitSub,
 	TableBaseHighLimitSub,
     TableBaseLineNum,
-    TalbeBaseIndexNum
+    TableBaseIndexNum
 };
 const char *ThermalCoupleTypeString[]={
     "TC_TYPE_R",
@@ -36,7 +36,7 @@ const char *ThermalCoupleTypeString[]={
 	"TC_TYPE_A"
 };
 static double its90Table[TC_TYPE_NUM][MAX_TEMP_NUM][NUM_PER_LINE];
-static int its90TableBase[TC_TYPE_NUM][TalbeBaseIndexNum];   
+static int its90TableBase[TC_TYPE_NUM][TableBaseIndexNum];   
 
 const double EMF_ERROR_PERMIT=0.12;
 const double T_ERROR_PERMIT=0.2;
@@ -47,7 +47,7 @@ int read_its90_table_from_file(string& file_name)
         cout << "error while open its90 file when write." << endl;
         return -1;
     }
-    its90in.read((char*)its90TableBase, sizeof(int)*TC_TYPE_NUM*TalbeBaseIndexNum);
+    its90in.read((char*)its90TableBase, sizeof(int)*TC_TYPE_NUM*TableBaseIndexNum);
     its90in.read((char*)its90Table,sizeof(double)*TC_TYPE_NUM*MAX_TEMP_NUM*NUM_PER_LINE);
     its90in.close();
     cout<<"read its90 table file"<<file_name<<" success!"<<endl;

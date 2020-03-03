@@ -1,11 +1,9 @@
 # ThermocoupleCalculator
 
-This project provide a library to calculate themocouples.
+This project provide a library to calculate thermocouple.
 
 The data is from nist.gov.
 
-# Introducton
+## Introduction
 
-Just include the files under src in your project, and you can use the function to calculate EMF with temperature or calculate temperatur with EMF.
-
-
+Just include the files under src in your project, and you can use the function to calculate EMF with temperature or calculate temperature with EMF.

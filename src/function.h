@@ -21,9 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Themocouple calculate library.
+Thermocouple calculate library.
 This file is included by thermocouple.h. It should not be used separately.
-Defined functions to calcuate.
+Defined functions to calculate.
 */
 
 const unsigned char TC_CAL_SUCCESS=0;
@@ -33,7 +33,7 @@ const unsigned char TC_CAL_OUT_OF_HIGH_RANGE=-3;
 
 const int TC_SUBRANGE_INIT_VALUE=-2;
 
-int TcTypeRange(ThermalCoupleType type,double& temperature_range_low,double& temperatur_range_high, \
+int TcTypeRange(ThermalCoupleType type,double& temperature_range_low,double& temperature_range_high, \
                     double& emf_range_low,double &emf_range_high)
 {
     if(type>TC_TYPE_A)
@@ -44,7 +44,7 @@ int TcTypeRange(ThermalCoupleType type,double& temperature_range_low,double& tem
     int emfRangeNum=tc_inverse_function_subrange_num[type];
 
     temperature_range_low=tc_reference_function_subrange_base[type][0];
-    temperatur_range_high=tc_reference_function_subrange_base[type][tempRangeNum];
+    temperature_range_high=tc_reference_function_subrange_base[type][tempRangeNum];
     emf_range_low=tc_inverse_function_subrange_base[type][0];
     emf_range_high=tc_inverse_function_subrange_base[type][emfRangeNum];
 
