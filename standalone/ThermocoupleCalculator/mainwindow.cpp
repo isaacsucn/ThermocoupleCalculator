@@ -29,7 +29,7 @@ void MainWindow::on_pushButton_cal_temp_clicked()
     int type;
     type= ui->comboBox_type->currentIndex();
     int rc;
-    rc=TcEMFtoTwithRc((ThermalCoupleType)type,emf,temp,error_range_low,error_range_high);
+    rc=TcEMFtoTwithRc((ThermocoupleType)type,emf,temp,error_range_low,error_range_high);
     if(rc==TC_CAL_SUCCESS )
     {
         out_string.sprintf("Tpye:%s,EMF=%lfmV,Temperature=%lf°C, \n error range %f~%f°C", ui->comboBox_type->currentText().toLocal8Bit().data()\
@@ -41,7 +41,7 @@ void MainWindow::on_pushButton_cal_temp_clicked()
 
     if(rc==TC_CAL_OUT_OF_LOW_RANGE||rc==TC_CAL_OUT_OF_HIGH_RANGE)
     {
-        rc=TcTypeRange((ThermalCoupleType)type,cal_temp_range_low,cal_temp_range_high,cal_emf_range_low,cal_emf_range_high);
+        rc=TcTypeRange((ThermocoupleType)type,cal_temp_range_low,cal_temp_range_high,cal_emf_range_low,cal_emf_range_high);
         out_string.sprintf("EMF is out of range, \nit should be in the range %lf~%lf mV for type ",cal_emf_range_low,cal_emf_range_high);
         out_string+=ui->comboBox_type->currentText();
         ui->label_temp_result->setText(out_string);
@@ -66,7 +66,7 @@ void MainWindow::on_pushButton_cal_EMF_clicked()
     int type;
     type= ui->comboBox_type->currentIndex();
     int rc;
-    rc=TcTtoEMFwithRc((ThermalCoupleType)type,temp,emf);
+    rc=TcTtoEMFwithRc((ThermocoupleType)type,temp,emf);
     if(rc==TC_CAL_SUCCESS )
     {
         out_string.sprintf("Tpye:%s,Temperature=%lf°C,EMF=%lfmV", ui->comboBox_type->currentText().toLocal8Bit().data(),temp,emf);
@@ -77,7 +77,7 @@ void MainWindow::on_pushButton_cal_EMF_clicked()
 
     if(rc==TC_CAL_OUT_OF_LOW_RANGE||rc==TC_CAL_OUT_OF_HIGH_RANGE)
     {
-        rc=TcTypeRange((ThermalCoupleType)type,cal_temp_range_low,cal_temp_range_high,cal_emf_range_low,cal_emf_range_high);
+        rc=TcTypeRange((ThermocoupleType)type,cal_temp_range_low,cal_temp_range_high,cal_emf_range_low,cal_emf_range_high);
         out_string.sprintf("Temperature is out of range, \nit should be in the range of %lf~%lf °C for type ",cal_temp_range_low,cal_temp_range_high);
         out_string+=ui->comboBox_type->currentText();
         ui->label_emf_result->setText(out_string);

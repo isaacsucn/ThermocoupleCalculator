@@ -45,7 +45,7 @@ const unsigned short TC_MAX_SUBRANGE_NUM=6;
 const unsigned short TC_MAX_COEFFICIENTS_NUM=15;
 const unsigned short TC_TYPE_K_EXPONENTIAL_CONST_NUM=3;
 const unsigned short MAX_CHAR_NUM=30;
-enum ThermalCoupleType
+enum ThermocoupleType
 {
 	TC_TYPE_R=0,
 	TC_TYPE_S,
@@ -59,7 +59,7 @@ enum ThermalCoupleType
 	TC_TYPE_A,
     TC_TYPE_NUM
 };
-const char *ThermalCoupleTypeString[]={
+const char *ThermocoupleTypeString[]={
     "TC_TYPE_R",
     "TC_TYPE_S",
     "TC_TYPE_B",
@@ -71,7 +71,7 @@ const char *ThermalCoupleTypeString[]={
 	"TC_TYPE_C",
 	"TC_TYPE_A"
 };
-map<char,ThermalCoupleType> thermoCoupleMap;
+map<char,ThermocoupleType> thermoCoupleMap;
 
 enum ErrorRangeIndex
 {
@@ -134,7 +134,7 @@ int read_data_from_file(string& file_name)
     }
     
     char currentTypeChar;
-    ThermalCoupleType currentType;
+    ThermocoupleType currentType;
     ActionType  currentAction;
     bool notFirstRun=false;
     int rc=0;
@@ -504,9 +504,12 @@ int read_data_from_file(string& file_name)
                 std::cerr << e.what() << "t line"<< lineNum <<'\n';
                 return -1;
             }
-            tc_inverse_function_coefficients[currentType][rangeIndex][coefficientIndex]=coefficient;
-            strcpy(tc_inverse_function_coefficients_char[currentType][rangeIndex][coefficientIndex],s1.c_str());
-            tc_inverse_function_coefficients_num[currentType][rangeIndex]=coefficientIndex+1;
+            if((coefficientIndex==0)||(coefficient!=0))
+            {
+                tc_inverse_function_coefficients[currentType][rangeIndex][coefficientIndex]=coefficient;
+                strcpy(tc_inverse_function_coefficients_char[currentType][rangeIndex][coefficientIndex],s1.c_str());
+                tc_inverse_function_coefficients_num[currentType][rangeIndex]=coefficientIndex+1;
+            }
             rangeIndex++;
             while(is>>s2)
             {
@@ -519,9 +522,12 @@ int read_data_from_file(string& file_name)
                     std::cerr << e.what() << "t line"<< lineNum <<'\n';
                     return -1;
                 }
-                tc_inverse_function_coefficients[currentType][rangeIndex][coefficientIndex]=coefficient;
-                strcpy(tc_inverse_function_coefficients_char[currentType][rangeIndex][coefficientIndex],s2.c_str());
-                tc_inverse_function_coefficients_num[currentType][rangeIndex]=coefficientIndex+1;
+                if((coefficientIndex==0)||(coefficient!=0))
+                {
+                    tc_inverse_function_coefficients[currentType][rangeIndex][coefficientIndex]=coefficient;
+                    strcpy(tc_inverse_function_coefficients_char[currentType][rangeIndex][coefficientIndex],s2.c_str());
+                    tc_inverse_function_coefficients_num[currentType][rangeIndex]=coefficientIndex+1;
+                }                
                 rangeIndex++;
             }
             coefficientIndex++;
@@ -552,6 +558,17 @@ int read_data_from_file(string& file_name)
     return 0;
 }
 
+int coefficient_mv2uv()
+{
+    
+    //tc_reference_function_coefficients_char[TC_TYPE_NUM][TC_MAX_SUBRANGE_NUM][TC_MAX_COEFFICIENTS_NUM][MAX_CHAR_NUM];
+    //tc_reference_function_typeK_exponential_const_char[TC_TYPE_K_EXPONENTIAL_CONST_NUM][MAX_CHAR_NUM];
+
+    //tc_inverse_function_subrange_base_char[TC_TYPE_NUM][TC_MAX_SUBRANGE_NUM+1][MAX_CHAR_NUM];
+    //tc_inverse_function_coefficients_char[TC_TYPE_NUM][TC_MAX_SUBRANGE_NUM][TC_MAX_COEFFICIENTS_NUM][MAX_CHAR_NUM];
+
+}
+
 int write_coefficient_const(ostream& outFile)
 {
     outFile<<"#ifndef _THERMOCOUPLE_H"<<endl;
@@ -561,7 +578,7 @@ int write_coefficient_const(ostream& outFile)
     outFile<<"const unsigned short TC_MAX_SUBRANGE_NUM=6;"<<endl;
     outFile<<"const unsigned short TC_MAX_COEFFICIENTS_NUM=15;"<<endl;
     outFile<<"const unsigned short TC_TYPE_K_EXPONENTIAL_CONST_NUM=3;"<<endl<<endl;
-    outFile<<"enum ThermalCoupleType"<<endl;
+    outFile<<"enum ThermocoupleType"<<endl;
     outFile<<"{"<<endl;
     outFile<<"    TC_TYPE_R=0,"<<endl;
     outFile<<"    TC_TYPE_S,"<<endl;
@@ -603,7 +620,7 @@ int write_reference_function_coefficients(ostream& outFile)
         {
             outFile<<",";
         }
-        outFile<<"//"<<ThermalCoupleTypeString[outType]<<endl;
+        outFile<<"//"<<ThermocoupleTypeString[outType]<<endl;
     } 
     outFile<<"};"<<endl<<endl;
 
@@ -625,7 +642,7 @@ int write_reference_function_coefficients(ostream& outFile)
         {
             outFile<<",";
         }
-        outFile<<"//"<<ThermalCoupleTypeString[outType]<<endl;
+        outFile<<"//"<<ThermocoupleTypeString[outType]<<endl;
     } 
     outFile<<"};"<<endl<<endl;
 
@@ -647,7 +664,7 @@ int write_reference_function_coefficients(ostream& outFile)
         {
             outFile<<",";
         }
-        outFile<<"//"<<ThermalCoupleTypeString[outType]<<endl;
+        outFile<<"//"<<ThermocoupleTypeString[outType]<<endl;
     } 
     outFile<<"};"<<endl<<endl;
 
@@ -655,7 +672,7 @@ int write_reference_function_coefficients(ostream& outFile)
     outFile<<"{"<<endl;
     for(int outType=TC_TYPE_R;outType<=TC_TYPE_A;outType++)
     {
-        outFile<<"    {//"<<ThermalCoupleTypeString[outType]<<endl;
+        outFile<<"    {//"<<ThermocoupleTypeString[outType]<<endl;
         for(int outSubrangeIndex=0;outSubrangeIndex<tc_reference_function_subrange_num[outType];outSubrangeIndex++)
         {
             outFile<<"        {";
@@ -709,7 +726,7 @@ int write_inverse_function_coefficients(ostream& outFile)
         {
             outFile<<",";
         }
-        outFile<<"//"<<ThermalCoupleTypeString[outType]<<endl;
+        outFile<<"//"<<ThermocoupleTypeString[outType]<<endl;
     } 
     outFile<<"};"<<endl<<endl;
     
@@ -731,7 +748,7 @@ int write_inverse_function_coefficients(ostream& outFile)
         {
             outFile<<",";
         }
-        outFile<<"//"<<ThermalCoupleTypeString[outType]<<endl;
+        outFile<<"//"<<ThermocoupleTypeString[outType]<<endl;
     } 
     outFile<<"};"<<endl<<endl;
 
@@ -753,7 +770,7 @@ int write_inverse_function_coefficients(ostream& outFile)
         {
             outFile<<",";
         }
-        outFile<<"//"<<ThermalCoupleTypeString[outType]<<endl;
+        outFile<<"//"<<ThermocoupleTypeString[outType]<<endl;
     } 
     outFile<<"};"<<endl<<endl;
 
@@ -775,7 +792,7 @@ int write_inverse_function_coefficients(ostream& outFile)
         {
             outFile<<",";
         }
-        outFile<<"//"<<ThermalCoupleTypeString[outType]<<endl;
+        outFile<<"//"<<ThermocoupleTypeString[outType]<<endl;
     } 
     outFile<<"};"<<endl<<endl;
  
@@ -783,7 +800,7 @@ int write_inverse_function_coefficients(ostream& outFile)
     outFile<<"{"<<endl;
     for(int outType=TC_TYPE_R;outType<=TC_TYPE_A;outType++)
     {
-        outFile<<"    {//"<<ThermalCoupleTypeString[outType]<<endl;
+        outFile<<"    {//"<<ThermocoupleTypeString[outType]<<endl;
         for(int outSubrangeIndex=0;outSubrangeIndex<tc_inverse_function_subrange_num[outType];outSubrangeIndex++)
         {
             outFile<<"        {";
@@ -816,7 +833,7 @@ int write_inverse_function_coefficients(ostream& outFile)
     outFile<<"{"<<endl;
     for(int outType=TC_TYPE_R;outType<=TC_TYPE_A;outType++)
     {
-        outFile<<"    {//"<<ThermalCoupleTypeString[outType]<<endl;
+        outFile<<"    {//"<<ThermocoupleTypeString[outType]<<endl;
         for(int outSubrangeIndex=0;outSubrangeIndex<tc_inverse_function_subrange_num[outType];outSubrangeIndex++)
         {
             outFile<<"		{";
@@ -881,7 +898,7 @@ int write_its90_table_to_txt_file(string& file_name)
     int showTemperature;
     for(int type=TC_TYPE_R;type<TC_TYPE_NUM;type++)
     {
-        its90txtout<<" ITS-90 Table for type "<<ThermalCoupleTypeString[type]<< " thermocouple"<<endl;
+        its90txtout<<" ITS-90 Table for type "<<ThermocoupleTypeString[type]<< " thermocouple"<<endl;
         its90txtout<<" range "<<its90TableBase[type][TableBaseLowLimit]<<"."<<its90TableBase[type][TableBaseLowLimitSub];
         its90txtout<<"~"<<its90TableBase[type][TableBaseHighLimit]<<"."<<its90TableBase[type][TableBaseHighLimitSub]<<"°C"<<endl;
         if(its90TableBase[type][TableBaseLowLimit]<0)
@@ -977,7 +994,7 @@ int main()
 	thermoCoupleMap['A']=TC_TYPE_A;
     int rc;
     string sourceFileName,coefficientFileName,its90BinFileName,its90TxtFileName,testIts90TxtFileName;
-    sourceFileName="all.tab";
+    sourceFileName="all_IEC.tab";
     coefficientFileName="thermocouple.h";
     its90BinFileName="its90.dat";
     its90TxtFileName="its90.txt";

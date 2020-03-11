@@ -23,7 +23,7 @@ enum TableBaseIndex
     TableBaseLineNum,
     TableBaseIndexNum
 };
-const char *ThermalCoupleTypeString[]={
+const char *ThermocoupleTypeString[]={
     "TC_TYPE_R",
     "TC_TYPE_S",
     "TC_TYPE_B",
@@ -40,6 +40,8 @@ static int its90TableBase[TC_TYPE_NUM][TableBaseIndexNum];
 
 const double EMF_ERROR_PERMIT=0.12;
 const double T_ERROR_PERMIT=0.2;
+double emfMaxError(0),tempMaxError(0);
+
 int read_its90_table_from_file(string& file_name)
 {
     ifstream its90in(file_name.c_str(), std::ios::binary);
@@ -98,7 +100,7 @@ int write_test_result(string&file_name)
     float errorRangeLow,errorRangeHigh;
     for(int type=TC_TYPE_R;type<TC_TYPE_NUM;type++)
     {
-        testResult<<" ITS-90 Table for type "<<ThermalCoupleTypeString[type]<< " thermocouple"<<endl;
+        testResult<<" ITS-90 Table for type "<<ThermocoupleTypeString[type]<< " thermocouple"<<endl;
         testResult<<" range "<<its90TableBase[type][TableBaseLowLimit]<<"."<<its90TableBase[type][TableBaseLowLimitSub];
         testResult<<"~"<<its90TableBase[type][TableBaseHighLimit]<<"."<<its90TableBase[type][TableBaseHighLimitSub]<<"°C"<<endl;
         if(its90TableBase[type][TableBaseLowLimit]<0)
@@ -150,7 +152,7 @@ int write_test_result(string&file_name)
             for(int j=0;j<columnNum;j++)
             {
                 exactTemperature=(double)baseTemperature+(double)(sign*j);
-                rc=TcTtoEMFwithRc((ThermalCoupleType)type,exactTemperature,emf);
+                rc=TcTtoEMFwithRc((ThermocoupleType)type,exactTemperature,emf);
                 testResult<<" "<<setw(11)<<emf;
                 if(rc==TC_CAL_SUCCESS)
                 {
@@ -162,9 +164,13 @@ int write_test_result(string&file_name)
                 }
             }
             testResult<<" "<<setw(11)<<maxError<<endl;
+            if(maxError>emfMaxError)
+            {
+                emfMaxError=maxError;
+            }
             if(maxError>EMF_ERROR_PERMIT)
             {
-                cout<<"TtoEMF test failed! "<<ThermalCoupleTypeString[type]<<", temperature line "<<baseTemperature;
+                cout<<"TtoEMF test failed! "<<ThermocoupleTypeString[type]<<", temperature line "<<baseTemperature;
                 cout<<" error is "<<maxError<<endl;
             }
             maxError=0.0f;
@@ -172,7 +178,7 @@ int write_test_result(string&file_name)
             for(int j=0;j<columnNum;j++)
             {
                 exactTemperature=(double)baseTemperature+(double)(sign*j);
-                rc=TcEMFtoTwithRc((ThermalCoupleType)type,its90Table[type][i][j],calTemperature,errorRangeLow,errorRangeHigh);
+                rc=TcEMFtoTwithRc((ThermocoupleType)type,its90Table[type][i][j],calTemperature,errorRangeLow,errorRangeHigh);
                 testResult<<" "<<setw(11)<<calTemperature;
                 if(rc==TC_CAL_SUCCESS)
                 {
@@ -185,9 +191,13 @@ int write_test_result(string&file_name)
             }           
             testResult<<" "<<setw(11)<<maxError;
             testResult<<"  "<<errorRangeLow<<"~"<<errorRangeHigh<<endl;
+            if(maxError>tempMaxError)
+            {
+                tempMaxError=maxError;
+            }
             if(maxError>T_ERROR_PERMIT)
             {
-                cout<<"EMFtoT test failed! "<<ThermalCoupleTypeString[type]<<", temperature line "<<baseTemperature;
+                cout<<"EMFtoT test failed! "<<ThermocoupleTypeString[type]<<", temperature line "<<baseTemperature;
                 cout<<" error is "<<maxError<<endl;
             }
         }       
@@ -201,4 +211,6 @@ int main()
     string its90TestResultName="its90test_result.txt";
     read_its90_table_from_file(its90FileName);
     write_test_result(its90TestResultName);
+    cout<<"Max emf error: "<<emfMaxError<<endl;
+    cout<<"Max Temperature error: "<<tempMaxError<<endl;
 }

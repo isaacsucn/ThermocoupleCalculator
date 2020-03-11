@@ -33,7 +33,7 @@ const unsigned char TC_CAL_OUT_OF_HIGH_RANGE=-3;
 
 const int TC_SUBRANGE_INIT_VALUE=-2;
 
-int TcTypeRange(ThermalCoupleType type,double& temperature_range_low,double& temperature_range_high, \
+int TcTypeRange(ThermocoupleType type,double& temperature_range_low,double& temperature_range_high, \
                     double& emf_range_low,double &emf_range_high)
 {
     if(type>TC_TYPE_A)
@@ -56,7 +56,7 @@ int TcTypeRange(ThermalCoupleType type,double& temperature_range_low,double& tem
 //return TC_CAL_SUCCESS if calculate right value;
 //return TC_CAL_OUT_OF_LOW_RANGE if the input is out of low range;
 //return TC_CAL_OUT_OF_HIGH_RANGE if the input is out of high range;
-int TcEMFtoTwithRc(ThermalCoupleType type,double emf,double &temperature,float& error_range_low,float& error_range_high)
+int TcEMFtoTwithRc(ThermocoupleType type,double emf,double &temperature,float& error_range_low,float& error_range_high)
 {
     int rc=TC_CAL_SUCCESS;
     int subrange;
@@ -109,7 +109,7 @@ int TcEMFtoTwithRc(ThermalCoupleType type,double emf,double &temperature,float& 
 
 //calculate temperature with EMF, which is expressed in millivolt
 //return ITS-90 temperature, expressed in degrees Celsius (°C);
-double TcEMFtoT(ThermalCoupleType type,double emf)
+double TcEMFtoT(ThermocoupleType type,double emf)
 {
     double temperature;
     float errorRangeLow,errorRangeHigh;
@@ -122,7 +122,7 @@ double TcEMFtoT(ThermalCoupleType type,double emf)
 //return TC_CAL_SUCCESS if calculate right value;
 //return TC_CAL_OUT_OF_LOW_RANGE if the input is out of low range;
 //return TC_CAL_OUT_OF_HIGH_RANGE if the input is out of high range;
-int TcTtoEMFwithRc(ThermalCoupleType type,double temperature,double& emf)
+int TcTtoEMFwithRc(ThermocoupleType type,double temperature,double& emf)
 {
     int rc=TC_CAL_SUCCESS;
     int subrange;
@@ -181,7 +181,7 @@ int TcTtoEMFwithRc(ThermalCoupleType type,double temperature,double& emf)
 
 //calculate EMF with ITS-90 temperature, which is expressed in degrees Celsius (°C)
 //return EMF, expressed in millivolt;
-double TcTtoEMF(ThermalCoupleType type,double temperature)
+double TcTtoEMF(ThermocoupleType type,double temperature)
 {
     double emf;
     TcTtoEMFwithRc(type,temperature,emf);
