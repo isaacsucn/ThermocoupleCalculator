@@ -168,7 +168,7 @@ int TcTtoEMFwithRc(ThermocoupleType type,double temperature,double& emf)
     }
     
     const int TC_TYPE_K_EXP_SUBRANGE=1;
-    if((type==TC_TYPE_K)||(subrange==TC_TYPE_K_EXP_SUBRANGE))
+    if((type==TC_TYPE_K)&&(subrange==TC_TYPE_K_EXP_SUBRANGE))
     {
         double calTemp;
         calTemp=tc_reference_function_typeK_exponential_const[1]*pow((temperature-tc_reference_function_typeK_exponential_const[2]),2);
